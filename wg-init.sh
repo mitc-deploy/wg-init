@@ -6,7 +6,7 @@ sudo apt-get update -y
 sudo apt install wireguard -y
 
 #Variables Declared
-# How Many Keys to be Generated
+#How Many Keys to be Generated
 HowMany=$1
 #What is the starting Static IP of Clients
 StartIPAddr=$2
