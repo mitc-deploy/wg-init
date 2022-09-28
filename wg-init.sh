@@ -79,6 +79,7 @@ for i in $(seq $HowMany); do
         PrivateKey = $(cat "/home/${SrvUser}/wg/keys/${StartIPAddr}_private_key")
         DNS = ${DNS}, ${DNS2}
         MTU = 1380
+
         [Peer]
         PublicKey = $(cat "/home/${SrvUser}/wg/keys/server_public_key")
         Endpoint = ${serverIP}:443
@@ -91,19 +92,11 @@ for i in $(seq $HowMany); do
            
     done
     
-# Add backup service -> Downloads backup script to wg/backup and creates a crontab at midnight on the first day of every month to run the backup script. 
-wget https://raw.githubusercontent.com/Ortus-Ireland/wgConfig/main/wg-backup.sh -P /home/${SrvUser}/wg/backup/
-sudo sh /home/${SrvUser}/wg/backup/wg-backup.sh $SrvUser
-
-crontab -l > /home/${SrvUser}/wg/backup/wgcron
-#echo new cron into cron file
-echo "0 0 1 * * /home/${SrvUser}/wg/backup/wg-backup.sh" >> /home/${SrvUser}/wg/backup/wgcron
-#install new cron file
-crontab -u ${SrvUser} /home/${SrvUser}/wg/backup/wgcron
-rm /home/${SrvUser}/wg/backup/wgcron    
-    
 sudo chown -R $SrvUser /home/$SrvUser/wg
 
 wg-quick down wg0
 sleep 2
 wg-quick up wg0
+
+
+
