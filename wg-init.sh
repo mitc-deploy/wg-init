@@ -6,7 +6,7 @@ sudo apt-get update -y
 sudo apt install wireguard -y
 
 #Variables Declared
-#How Many Keys to be Generated
+# How Many Keys to be Generated
 HowMany=$1
 #What is the starting Static IP of Clients
 StartIPAddr=$2
@@ -15,20 +15,21 @@ serverIP=$3
 # Change User
 SrvUser=$4
 #Domanin Controllers DNS
-#DNS=10.200.200.1
+# DNS=10.200.200.1
 DNS=$5
 DNS2=$6
 #Allowed IPs
 AllowedIPs=$7
 
 
-#Setup Folders & Server Keys
+# Setup Folders & Server Keys
 
 mkdir /home/${SrvUser}/wg
 mkdir /home/${SrvUser}/wg/keys
 mkdir /home/${SrvUser}/wg/clients
 mkdir /home/${SrvUser}/wg/backup/
 sudo umask 077
+
 
 sudo wg genkey | tee /home/${SrvUser}/wg/keys/server_private_key | wg pubkey > /home/${SrvUser}/wg/keys/server_public_key
 
@@ -41,7 +42,7 @@ PrivateKey=$(cat /home/${SrvUser}/wg/keys/server_private_key)" | sudo tee /etc/w
 
 sudo sysctl -w net.ipv4.ip_forward=1
 
-##IP Forwarding
+## IP Forwarding
 sed -i -e 's/#net.ipv4.ip_forward.*/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
 # sed -i -e 's/#net.ipv6.conf.all.forwarding.*/net.ipv6.conf.all.forwarding=1/g' /etc/sysctl.conf
 # sudo sysctl -p /etc/sysctl.conf
@@ -78,7 +79,6 @@ for i in $(seq $HowMany); do
         PrivateKey = $(cat "/home/${SrvUser}/wg/keys/${StartIPAddr}_private_key")
         DNS = ${DNS}, ${DNS2}
         MTU = 1380
-
         [Peer]
         PublicKey = $(cat "/home/${SrvUser}/wg/keys/server_public_key")
         Endpoint = ${serverIP}:443
@@ -91,11 +91,7 @@ for i in $(seq $HowMany); do
            
     done
     
-sudo chown -R $SrvUser /home/$SrvUser/wg
 
 wg-quick down wg0
 sleep 2
 wg-quick up wg0
-
-
-
